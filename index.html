@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Header mínimo -->
+  <header class="auth-header">
+    <div class="logo">
+      <span class="logo-icon">🟠</span>
+      <span class="logo-text">Orange <strong>Bank</strong></span>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Bem-vindo de volta</h1>
+      <p class="auth-sub">Acesse sua conta com segurança</p>
+
+      <form id="loginForm" onsubmit="doLogin(event)">
+        <div class="field-group">
+          <label for="cpf">CPF</label>
+          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)" />
+        </div>
+        <div class="field-group">
+          <label for="senha">Senha</label>
+          <div class="input-eye">
+            <input type="password" id="senha" placeholder="••••••••" />
+            <button type="button" class="eye-btn" onclick="togglePwd()">👁</button>
+          </div>
+        </div>
+        <div class="remember-row">
+          <label><input type="checkbox" /> Lembrar CPF</label>
+          <a href="#" class="link">Esqueci a senha</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+      </form>
+
+      <div class="divider">ou</div>
+      <button class="btn btn-outline btn-full" onclick="goRegister()">Abrir minha conta</button>
+
+      <p class="auth-footer">Ambiente seguro · SSL 256-bit · Certificado pelo Banco Central</p>
+    </div>
+
+    <!-- Card lateral ilustrativo -->
+    <div class="auth-promo">
+      <div class="promo-badge">Novo</div>
+      <h2>Tudo na palma da sua mão</h2>
+      <ul class="promo-list">
+        <li>💳 Cartão virtual instantâneo</li>
+        <li>📈 Rendimento automático 110% CDI</li>
+        <li>🔄 Pix sem limites</li>
+        <li>🌎 Câmbio sem IOF para compras</li>
+        <li>🛡️ Seguro conta grátis</li>
+      </ul>
+      <div class="promo-card-mockup">
+        <div class="mock-card">
+          <div class="mock-card-top">
+            <span>Orange Bank</span>
+            <span class="mock-chip"></span>
+          </div>
+          <div class="mock-card-num">•••• •••• •••• 4821</div>
+          <div class="mock-card-bot">
+            <span>CARLOS R. SILVA</span>
+            <span>08/29</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="auth-page-footer">
+    <p>© 2025 Orange Bank · CNPJ 00.000.000/0001-00 · Regulado pelo Banco Central do Brasil</p>
+    <nav><a href="#">Privacidade</a> · <a href="#">Termos</a> · <a href="#">Acessibilidade</a> · <a href="#">Ouvidoria</a></nav>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

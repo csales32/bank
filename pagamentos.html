@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Pagamentos</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item active"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Pagamentos</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <!-- TIPOS DE PAGAMENTO -->
+      <div class="pag-types">
+        <button class="pag-type-btn active" onclick="setPagType(this,'boleto')">
+          <span>📄</span><br>Boleto
+        </button>
+        <button class="pag-type-btn" onclick="setPagType(this,'concessionaria')">
+          <span>💡</span><br>Contas
+        </button>
+        <button class="pag-type-btn" onclick="setPagType(this,'impostos')">
+          <span>🏛</span><br>Impostos
+        </button>
+        <button class="pag-type-btn" onclick="setPagType(this,'recarga')">
+          <span>📱</span><br>Recarga
+        </button>
+      </div>
+
+      <!-- FORM BOLETO -->
+      <div class="pag-form" id="pagBoleto">
+        <h2>Pagar boleto</h2>
+        <div class="field-group">
+          <label>Código de barras / Linha digitável</label>
+          <div class="barcode-row">
+            <input type="text" id="barcodeInput" placeholder="000.00000.00000 0 00000.000000 0 00000000 0 00000000000" />
+            <button class="btn btn-sm" onclick="readBarcode()">📷</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="readBoleto()">Consultar boleto</button>
+
+        <div class="boleto-result hidden" id="boletoResult">
+          <div class="review-box">
+            <div class="review-row"><span>Beneficiário</span><strong id="bBenef">COPEL Energia</strong></div>
+            <div class="review-row"><span>Valor</span><strong id="bVal">R$ 187,45</strong></div>
+            <div class="review-row"><span>Vencimento</span><strong id="bVenc">12/06/2025</strong></div>
+          </div>
+          <div class="field-group">
+            <label>Data de pagamento</label>
+            <input type="date" id="bDate" />
+          </div>
+          <button class="btn btn-primary btn-full" onclick="payBoleto()">Pagar agora</button>
+        </div>
+      </div>
+
+      <!-- FORM CONTAS -->
+      <div class="pag-form hidden" id="pagConcessionaria">
+        <h2>Pagar contas</h2>
+        <div class="contas-grid">
+          <button class="conta-btn" onclick="selectConta('Energia Elétrica')"><span>💡</span>Energia</button>
+          <button class="conta-btn" onclick="selectConta('Água e Saneamento')"><span>💧</span>Água</button>
+          <button class="conta-btn" onclick="selectConta('Gás')"><span>🔥</span>Gás</button>
+          <button class="conta-btn" onclick="selectConta('Internet')"><span>🌐</span>Internet</button>
+          <button class="conta-btn" onclick="selectConta('Telefone')"><span>☎️</span>Telefone</button>
+          <button class="conta-btn" onclick="selectConta('TV a Cabo')"><span>📺</span>TV</button>
+          <button class="conta-btn" onclick="selectConta('Condomínio')"><span>🏢</span>Condomínio</button>
+          <button class="conta-btn" onclick="selectConta('IPTU')"><span>🏠</span>IPTU</button>
+        </div>
+      </div>
+
+      <!-- FORM IMPOSTOS -->
+      <div class="pag-form hidden" id="pagImpostos">
+        <h2>Pagar impostos</h2>
+        <div class="contas-grid">
+          <button class="conta-btn" onclick="selectConta('DARF')"><span>🏛</span>DARF</button>
+          <button class="conta-btn" onclick="selectConta('GPS (INSS)')"><span>🛡</span>INSS</button>
+          <button class="conta-btn" onclick="selectConta('FGTS')"><span>💼</span>FGTS</button>
+          <button class="conta-btn" onclick="selectConta('DAS Simples')"><span>📋</span>Simples</button>
+        </div>
+      </div>
+
+      <!-- FORM RECARGA -->
+      <div class="pag-form hidden" id="pagRecarga">
+        <h2>Recarga de celular</h2>
+        <div class="field-group">
+          <label>Número</label>
+          <input type="text" id="recargaNum" placeholder="(00) 00000-0000" />
+        </div>
+        <div class="operadoras">
+          <button class="op-btn active" onclick="setOp(this,'Vivo')">Vivo</button>
+          <button class="op-btn" onclick="setOp(this,'Claro')">Claro</button>
+          <button class="op-btn" onclick="setOp(this,'TIM')">TIM</button>
+          <button class="op-btn" onclick="setOp(this,'Oi')">Oi</button>
+        </div>
+        <div class="recarga-valores">
+          <button class="val-btn" onclick="setRecarga(this,'R$ 20,00')">R$ 20</button>
+          <button class="val-btn" onclick="setRecarga(this,'R$ 30,00')">R$ 30</button>
+          <button class="val-btn" onclick="setRecarga(this,'R$ 50,00')">R$ 50</button>
+          <button class="val-btn" onclick="setRecarga(this,'R$ 75,00')">R$ 75</button>
+          <button class="val-btn" onclick="setRecarga(this,'R$ 100,00')">R$ 100</button>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doRecarga()">Confirmar recarga</button>
+      </div>
+
+      <!-- HISTÓRICO DE PAGAMENTOS -->
+      <section class="mt16">
+        <h2 class="section-title">Histórico de pagamentos</h2>
+        <ul class="tx-list" id="pagHistList"></ul>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

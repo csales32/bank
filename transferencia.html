@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Transferência</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item active"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Transferência</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <div class="transfer-wrap">
+        <!-- TIPO -->
+        <div class="transfer-tabs">
+          <button class="ttab active" onclick="setTab(this,'ted')">TED / DOC</button>
+          <button class="ttab" onclick="setTab(this,'orange')">Entre contas Orange</button>
+          <button class="ttab" onclick="setTab(this,'agendada')">Agendada</button>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="transfer-step" id="step1">
+          <h2>Dados do destinatário</h2>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Nome do favorecido</label>
+              <input type="text" id="tfName" placeholder="Nome completo" />
+            </div>
+            <div class="field-group">
+              <label>CPF / CNPJ</label>
+              <input type="text" id="tfDoc" placeholder="000.000.000-00" />
+            </div>
+            <div class="field-group">
+              <label>Banco</label>
+              <select id="tfBank">
+                <option>Selecione o banco</option>
+                <option>001 — Banco do Brasil</option>
+                <option>033 — Santander</option>
+                <option>104 — Caixa Econômica</option>
+                <option>237 — Bradesco</option>
+                <option>341 — Itaú</option>
+                <option>260 — Nubank</option>
+                <option>077 — Inter</option>
+                <option>290 — Orange Bank</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Agência</label>
+              <input type="text" id="tfAg" placeholder="0000" maxlength="4" />
+            </div>
+            <div class="field-group">
+              <label>Conta</label>
+              <input type="text" id="tfConta" placeholder="00000-0" />
+            </div>
+            <div class="field-group">
+              <label>Tipo de conta</label>
+              <select id="tfTipo">
+                <option>Corrente</option>
+                <option>Poupança</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="tfNext()">Continuar →</button>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="transfer-step hidden" id="step2">
+          <h2>Valor e data</h2>
+          <div class="form-grid">
+            <div class="field-group full-width">
+              <label>Valor</label>
+              <input type="text" id="tfVal" placeholder="R$ 0,00" oninput="maskMoney(this)" />
+            </div>
+            <div class="field-group">
+              <label>Data</label>
+              <input type="date" id="tfDate" />
+            </div>
+            <div class="field-group">
+              <label>Descrição (opcional)</label>
+              <input type="text" id="tfDesc" placeholder="Ex: Pagamento aluguel" />
+            </div>
+          </div>
+          <div class="tf-btn-row">
+            <button class="btn btn-outline" onclick="tfBack()">← Voltar</button>
+            <button class="btn btn-primary" onclick="tfReview()">Revisar transferência</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 — Revisão -->
+        <div class="transfer-step hidden" id="step3">
+          <h2>Confirmar transferência</h2>
+          <div class="review-box" id="reviewBox"></div>
+          <div class="field-group">
+            <label>Senha de 4 dígitos</label>
+            <div class="pin-row" id="pinRow">
+              <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+              <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+              <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+              <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+            </div>
+          </div>
+          <div class="tf-btn-row">
+            <button class="btn btn-outline" onclick="tfBackToStep2()">← Voltar</button>
+            <button class="btn btn-primary" onclick="tfConfirm()">Confirmar</button>
+          </div>
+        </div>
+
+        <!-- STEP 4 — Sucesso -->
+        <div class="transfer-step hidden" id="step4">
+          <div class="success-box">
+            <div class="success-icon">✅</div>
+            <h2>Transferência realizada!</h2>
+            <p id="successMsg"></p>
+            <div class="tf-btn-row">
+              <button class="btn btn-outline" onclick="tfNew()">Nova transferência</button>
+              <button class="btn btn-primary" onclick="window.location='extrato.html'">Ver extrato</button>
+            </div>
+            <a href="#" class="link" onclick="printReceipt()">🖨 Imprimir comprovante</a>
+          </div>
+        </div>
+
+        <!-- FAVORITOS -->
+        <div class="favoritos-section">
+          <h3>Favoritos</h3>
+          <div class="fav-list" id="favList"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

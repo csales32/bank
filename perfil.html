@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Perfil</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item active"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Meu perfil</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <div class="profile-layout">
+        <!-- CARD DO PERFIL -->
+        <div class="profile-card">
+          <div class="profile-avatar-big">CR</div>
+          <h2>Carlos R. Silva</h2>
+          <p class="muted">carlos.silva@email.com</p>
+          <p class="muted">CPF: 123.456.789-00</p>
+          <span class="profile-badge">Conta Platinum</span>
+          <button class="btn btn-outline mt8" onclick="editPhoto()">Editar foto</button>
+        </div>
+
+        <!-- TABS PERFIL -->
+        <div class="profile-main">
+          <div class="profile-tabs">
+            <button class="ptab active" onclick="setProfileTab(this,'dados')">Dados pessoais</button>
+            <button class="ptab" onclick="setProfileTab(this,'endereco')">Endereço</button>
+            <button class="ptab" onclick="setProfileTab(this,'seguranca')">Segurança</button>
+            <button class="ptab" onclick="setProfileTab(this,'notif')">Notificações</button>
+          </div>
+
+          <!-- DADOS PESSOAIS -->
+          <div class="profile-tab-content" id="tabDados">
+            <div class="form-grid">
+              <div class="field-group">
+                <label>Nome completo</label>
+                <input type="text" value="Carlos Rodrigues Silva" />
+              </div>
+              <div class="field-group">
+                <label>CPF</label>
+                <input type="text" value="123.456.789-00" disabled />
+              </div>
+              <div class="field-group">
+                <label>Data de nascimento</label>
+                <input type="date" value="1990-03-15" />
+              </div>
+              <div class="field-group">
+                <label>Telefone</label>
+                <input type="text" value="(41) 99999-8888" />
+              </div>
+              <div class="field-group full-width">
+                <label>E-mail</label>
+                <input type="email" value="carlos.silva@email.com" />
+              </div>
+              <div class="field-group">
+                <label>Renda mensal</label>
+                <input type="text" value="R$ 8.500,00" />
+              </div>
+              <div class="field-group">
+                <label>Profissão</label>
+                <input type="text" value="Analista de TI" />
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">Salvar alterações</button>
+          </div>
+
+          <!-- ENDEREÇO -->
+          <div class="profile-tab-content hidden" id="tabEndereco">
+            <div class="form-grid">
+              <div class="field-group">
+                <label>CEP</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" id="cepInput" value="80000-000" placeholder="00000-000" />
+                  <button class="btn btn-sm" onclick="fetchCEP()">Buscar</button>
+                </div>
+              </div>
+              <div class="field-group full-width"><label>Logradouro</label><input type="text" value="Rua das Flores" /></div>
+              <div class="field-group"><label>Número</label><input type="text" value="123" /></div>
+              <div class="field-group"><label>Complemento</label><input type="text" value="Apto 45" /></div>
+              <div class="field-group"><label>Bairro</label><input type="text" value="Batel" /></div>
+              <div class="field-group"><label>Cidade</label><input type="text" value="Curitiba" /></div>
+              <div class="field-group"><label>Estado</label>
+                <select><option selected>PR — Paraná</option><option>SP — São Paulo</option><option>RJ — Rio de Janeiro</option></select>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">Salvar endereço</button>
+          </div>
+
+          <!-- SEGURANÇA -->
+          <div class="profile-tab-content hidden" id="tabSeguranca">
+            <div class="security-list">
+              <div class="sec-item">
+                <div>
+                  <strong>Senha de acesso</strong>
+                  <p class="muted small">Última alteração: 3 meses atrás</p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="changePwd()">Alterar</button>
+              </div>
+              <div class="sec-item">
+                <div>
+                  <strong>Senha transacional (4 dígitos)</strong>
+                  <p class="muted small">Usada para confirmar operações</p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="changePwd()">Alterar</button>
+              </div>
+              <div class="sec-item">
+                <div>
+                  <strong>Autenticação em 2 fatores (2FA)</strong>
+                  <p class="muted small">Ativo — via SMS e e-mail</p>
+                </div>
+                <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+              </div>
+              <div class="sec-item">
+                <div>
+                  <strong>Biometria / Face ID</strong>
+                  <p class="muted small">Permite login rápido no app</p>
+                </div>
+                <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+              </div>
+              <div class="sec-item">
+                <div>
+                  <strong>Dispositivos autorizados</strong>
+                  <p class="muted small">2 dispositivos conectados</p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="viewDevices()">Gerenciar</button>
+              </div>
+              <div class="sec-item danger">
+                <div>
+                  <strong>Encerrar conta</strong>
+                  <p class="muted small">Esta ação é irreversível</p>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="closeAccount()">Encerrar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOTIFICAÇÕES -->
+          <div class="profile-tab-content hidden" id="tabNotif">
+            <div class="security-list">
+              <div class="sec-item"><span>Pix recebido</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Pix enviado</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Vencimento de fatura</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Rendimento de investimentos</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Promoções e ofertas</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Alertas de segurança</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              <div class="sec-item"><span>Notícias do mercado</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+            </div>
+            <button class="btn btn-primary mt8" onclick="saveProfile()">Salvar preferências</button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Cartões</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item active"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Cartões</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <div class="cards-layout">
+        <!-- CARD VISUAL -->
+        <div class="card-display-area">
+          <div class="big-card credit" id="bigCard">
+            <div class="card-band">Mastercard Platinum</div>
+            <div class="card-chip">◼</div>
+            <div class="card-num">•••• •••• •••• 4821</div>
+            <div class="card-info-row">
+              <div><small>Titular</small><br>CARLOS R SILVA</div>
+              <div><small>Validade</small><br>08/29</div>
+            </div>
+            <div class="card-brand">💳</div>
+          </div>
+          <div class="card-switch-row">
+            <button class="card-sw-btn active" onclick="switchCard(this,'credit')">Crédito</button>
+            <button class="card-sw-btn" onclick="switchCard(this,'debit')">Débito</button>
+            <button class="card-sw-btn" onclick="switchCard(this,'virtual')">Virtual</button>
+          </div>
+        </div>
+
+        <!-- CONTROLES DO CARTÃO -->
+        <div class="card-controls">
+          <h2>Controle do cartão</h2>
+          <div class="toggle-row">
+            <span>Cartão físico</span>
+            <label class="toggle"><input type="checkbox" checked onchange="toggleCard(this,'fisico')"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Compras online</span>
+            <label class="toggle"><input type="checkbox" checked onchange="toggleCard(this,'online')"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Compras internacionais</span>
+            <label class="toggle"><input type="checkbox" onchange="toggleCard(this,'inter')"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Aproximação (NFC)</span>
+            <label class="toggle"><input type="checkbox" checked onchange="toggleCard(this,'nfc')"><span class="slider"></span></label>
+          </div>
+          <div class="card-actions-btns">
+            <button class="btn btn-outline" onclick="showCVV()">Ver CVV</button>
+            <button class="btn btn-outline" onclick="changeLimit()">Alterar limite</button>
+            <button class="btn btn-outline" onclick="blockCard()">Bloquear cartão</button>
+            <button class="btn btn-primary" onclick="requestVirtual()">+ Cartão virtual</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FATURA -->
+      <section class="fatura-section">
+        <div class="section-header">
+          <h2 class="section-title">Fatura — Junho 2025</h2>
+          <div class="fatura-nav">
+            <button onclick="prevFatura()">‹</button>
+            <span id="faturaMonth">Junho 2025</span>
+            <button onclick="nextFatura()">›</button>
+          </div>
+        </div>
+        <div class="fatura-summary">
+          <div class="fatura-val">
+            <span>Total da fatura</span>
+            <strong id="faturaTotal">R$ 842,50</strong>
+          </div>
+          <div class="fatura-val">
+            <span>Vencimento</span>
+            <strong>15 Jun 2025</strong>
+          </div>
+          <div class="fatura-val">
+            <span>Limite disponível</span>
+            <strong>R$ 4.157,50</strong>
+          </div>
+          <button class="btn btn-primary" onclick="payFatura()">Pagar fatura</button>
+        </div>
+        <ul class="tx-list" id="faturaList"></ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL CVV -->
+  <div class="modal-overlay hidden" id="cvvModal">
+    <div class="modal">
+      <h3>Código de segurança (CVV)</h3>
+      <p>Este código expira em <strong>30 segundos</strong></p>
+      <div class="cvv-display" id="cvvValue">357</div>
+      <div class="cvv-timer"><div class="cvv-bar" id="cvvBar"></div></div>
+      <button class="btn btn-outline btn-full mt8" onclick="closeCVV()">Fechar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

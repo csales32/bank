@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🟠</span>
+      <span class="logo-text">Orange <strong>Bank</strong></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <span class="nav-icon">🏠</span><span>Início</span>
+      </a>
+      <a href="extrato.html" class="nav-item">
+        <span class="nav-icon">📋</span><span>Extrato</span>
+      </a>
+      <a href="transferencia.html" class="nav-item">
+        <span class="nav-icon">🔄</span><span>Transferir</span>
+      </a>
+      <a href="pix.html" class="nav-item">
+        <span class="nav-icon">⚡</span><span>Pix</span>
+      </a>
+      <a href="cartoes.html" class="nav-item">
+        <span class="nav-icon">💳</span><span>Cartões</span>
+      </a>
+      <a href="investimentos.html" class="nav-item">
+        <span class="nav-icon">📈</span><span>Investimentos</span>
+      </a>
+      <a href="pagamentos.html" class="nav-item">
+        <span class="nav-icon">📄</span><span>Pagamentos</span>
+      </a>
+      <a href="perfil.html" class="nav-item">
+        <span class="nav-icon">👤</span><span>Perfil</span>
+      </a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()">
+      <span>🚪</span> Sair
+    </button>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="app-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting">
+        <span>Olá, <strong id="userName">Carlos</strong> 👋</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" title="Notificações" onclick="showNotifications()">
+          🔔<span class="badge" id="notifBadge">3</span>
+        </button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+
+    <!-- NOTIFICAÇÕES DROPDOWN -->
+    <div class="notif-panel hidden" id="notifPanel">
+      <h4>Notificações</h4>
+      <div class="notif-item unread"><span>🔄</span> Pix recebido de <strong>Ana Lima</strong> — R$ 150,00</div>
+      <div class="notif-item unread"><span>💳</span> Fatura do cartão vence em 3 dias — R$ 842,50</div>
+      <div class="notif-item unread"><span>📈</span> Seu CDB rendeu R$ 18,42 este mês</div>
+      <div class="notif-item"><span>✅</span> Transferência para João Silva confirmada</div>
+    </div>
+
+    <main class="main-area">
+
+      <!-- SALDO CARDS -->
+      <section class="balance-row">
+        <div class="balance-card primary">
+          <div class="balance-label">Saldo disponível
+            <button class="eye-toggle" onclick="toggleBalance()" id="eyeBtn">👁</button>
+          </div>
+          <div class="balance-value" id="saldoVal">R$ 12.480,35</div>
+          <div class="balance-account">Conta corrente · Ag 0001 · CC 12345-6</div>
+        </div>
+        <div class="balance-card secondary">
+          <div class="balance-label">Rendimento mensal</div>
+          <div class="balance-value green" id="rendVal">+ R$ 137,29</div>
+          <div class="balance-account">110% CDI · Conta remunerada</div>
+        </div>
+        <div class="balance-card secondary">
+          <div class="balance-label">Limite do cartão</div>
+          <div class="balance-value">R$ 5.000,00</div>
+          <div class="balance-account">Disponível: R$ 4.157,50</div>
+        </div>
+      </section>
+
+      <!-- AÇÕES RÁPIDAS -->
+      <section class="quick-actions">
+        <h2 class="section-title">Ações rápidas</h2>
+        <div class="qa-grid">
+          <a href="pix.html" class="qa-item">
+            <div class="qa-icon">⚡</div>
+            <span>Pix</span>
+          </a>
+          <a href="transferencia.html" class="qa-item">
+            <div class="qa-icon">🔄</div>
+            <span>Transferir</span>
+          </a>
+          <a href="pagamentos.html" class="qa-item">
+            <div class="qa-icon">📄</div>
+            <span>Pagar</span>
+          </a>
+          <a href="#" class="qa-item" onclick="showDeposit()">
+            <div class="qa-icon">⬇️</div>
+            <span>Depositar</span>
+          </a>
+          <a href="cartoes.html" class="qa-item">
+            <div class="qa-icon">💳</div>
+            <span>Cartões</span>
+          </a>
+          <a href="investimentos.html" class="qa-item">
+            <div class="qa-icon">📈</div>
+            <span>Investir</span>
+          </a>
+          <a href="#" class="qa-item">
+            <div class="qa-icon">🏦</div>
+            <span>Empréstimo</span>
+          </a>
+          <a href="#" class="qa-item">
+            <div class="qa-icon">📱</div>
+            <span>Recarga</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- GRÁFICO + ÚLTIMAS TRANSAÇÕES -->
+      <div class="dash-bottom">
+
+        <section class="chart-section">
+          <h2 class="section-title">Movimentação — Junho 2025</h2>
+          <div class="chart-legend">
+            <span class="legend-dot green"></span>Entradas
+            <span class="legend-dot red"></span>Saídas
+          </div>
+          <div class="bar-chart" id="barChart"></div>
+        </section>
+
+        <section class="recent-tx">
+          <div class="section-header">
+            <h2 class="section-title">Últimas transações</h2>
+            <a href="extrato.html" class="link">Ver todas</a>
+          </div>
+          <ul class="tx-list" id="txList"></ul>
+        </section>
+
+      </div>
+
+      <!-- PRODUTO DESTAQUE -->
+      <section class="promo-banner">
+        <div class="promo-text">
+          <span class="promo-tag">Oferta exclusiva</span>
+          <h3>Empréstimo pessoal com taxa a partir de 1,49% ao mês</h3>
+          <p>Parcelas que cabem no seu bolso. Aprovação em minutos, sem burocracia.</p>
+          <button class="btn btn-white">Simular agora</button>
+        </div>
+        <div class="promo-img">💰</div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL DEPOSITAR -->
+  <div class="modal-overlay hidden" id="depositModal">
+    <div class="modal">
+      <h3>Depositar via Pix</h3>
+      <p>Use a chave abaixo para realizar um depósito na sua conta:</p>
+      <div class="pix-key-box">
+        <span id="pixKeyVal">carlos.silva@orangebank.com.br</span>
+        <button class="btn btn-sm" onclick="copyPix()">Copiar</button>
+      </div>
+      <div class="qr-placeholder">
+        <div class="qr-box">QR Code<br/>(ilustrativo)</div>
+      </div>
+      <button class="btn btn-outline btn-full" onclick="closeDeposit()">Fechar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

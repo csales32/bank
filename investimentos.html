@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Investimentos</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item active"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Investimentos</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <!-- PATRIMÔNIO -->
+      <div class="invest-hero">
+        <div>
+          <div class="balance-label">Patrimônio investido</div>
+          <div class="balance-value">R$ 23.540,00</div>
+          <div class="balance-account green">▲ +R$ 318,42 este mês (1,37%)</div>
+        </div>
+        <button class="btn btn-primary" onclick="openInvestModal()">+ Investir agora</button>
+      </div>
+
+      <!-- DISTRIBUIÇÃO -->
+      <section class="invest-alloc">
+        <h2 class="section-title">Distribuição da carteira</h2>
+        <div class="alloc-grid">
+          <div class="alloc-item">
+            <div class="alloc-bar" style="--pct:55%;--clr:#e87722;"></div>
+            <span>CDB · 55%</span>
+            <strong>R$ 12.947,00</strong>
+          </div>
+          <div class="alloc-item">
+            <div class="alloc-bar" style="--pct:25%;--clr:#3b82d4;"></div>
+            <span>Tesouro Direto · 25%</span>
+            <strong>R$ 5.885,00</strong>
+          </div>
+          <div class="alloc-item">
+            <div class="alloc-bar" style="--pct:12%;--clr:#10b981;"></div>
+            <span>Fundos · 12%</span>
+            <strong>R$ 2.825,00</strong>
+          </div>
+          <div class="alloc-item">
+            <div class="alloc-bar" style="--pct:8%;--clr:#7c5cd8;"></div>
+            <span>LCI / LCA · 8%</span>
+            <strong>R$ 1.883,00</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUTOS -->
+      <section>
+        <h2 class="section-title">Produtos disponíveis</h2>
+        <div class="invest-products" id="investProducts"></div>
+      </section>
+
+      <!-- MEUS INVESTIMENTOS -->
+      <section>
+        <h2 class="section-title">Meus investimentos</h2>
+        <div class="my-invest-list" id="myInvestList"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL INVESTIR -->
+  <div class="modal-overlay hidden" id="investModal">
+    <div class="modal">
+      <h3>Novo investimento</h3>
+      <div class="field-group">
+        <label>Produto</label>
+        <select id="investProd">
+          <option>CDB 110% CDI — Liquidez diária</option>
+          <option>CDB 115% CDI — 12 meses</option>
+          <option>Tesouro Selic 2027</option>
+          <option>LCI 96% CDI — 6 meses</option>
+          <option>Fundo DI Prime</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Valor</label>
+        <input type="text" id="investAmt" placeholder="R$ 0,00" oninput="maskMoney(this)" />
+      </div>
+      <p class="muted small">Resgate previsto: calculado após confirmação</p>
+      <div class="tf-btn-row">
+        <button class="btn btn-outline" onclick="closeInvestModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmInvest()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

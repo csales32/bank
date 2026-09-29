@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Bank — Pix</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="app-page">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-icon">🟠</span><span class="logo-text">Orange <strong>Bank</strong></span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Início</span></a>
+      <a href="extrato.html" class="nav-item"><span class="nav-icon">📋</span><span>Extrato</span></a>
+      <a href="transferencia.html" class="nav-item"><span class="nav-icon">🔄</span><span>Transferir</span></a>
+      <a href="pix.html" class="nav-item active"><span class="nav-icon">⚡</span><span>Pix</span></a>
+      <a href="cartoes.html" class="nav-item"><span class="nav-icon">💳</span><span>Cartões</span></a>
+      <a href="investimentos.html" class="nav-item"><span class="nav-icon">📈</span><span>Investimentos</span></a>
+      <a href="pagamentos.html" class="nav-item"><span class="nav-icon">📄</span><span>Pagamentos</span></a>
+      <a href="perfil.html" class="nav-item"><span class="nav-icon">👤</span><span>Perfil</span></a>
+    </nav>
+    <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Sair</button>
+  </aside>
+  <div class="app-content">
+    <header class="topbar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-greeting"><span>Pix</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="showNotifications()">🔔<span class="badge">3</span></button>
+        <div class="avatar" onclick="window.location='perfil.html'">CR</div>
+      </div>
+    </header>
+    <main class="main-area">
+
+      <div class="pix-grid">
+
+        <!-- ENVIAR PIX -->
+        <div class="pix-card">
+          <h2>⚡ Enviar Pix</h2>
+          <div class="pix-tabs">
+            <button class="ptab active" onclick="setPixTab(this,'chave')">Chave</button>
+            <button class="ptab" onclick="setPixTab(this,'dados')">Dados bancários</button>
+            <button class="ptab" onclick="setPixTab(this,'qr')">QR Code</button>
+          </div>
+
+          <div id="pixTabChave">
+            <div class="field-group">
+              <label>Tipo de chave</label>
+              <select id="pixKeyType">
+                <option value="cpf">CPF</option>
+                <option value="email">E-mail</option>
+                <option value="telefone">Telefone</option>
+                <option value="aleatoria">Chave aleatória</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Chave Pix</label>
+              <input type="text" id="pixKeyInput" placeholder="Digite a chave" />
+            </div>
+          </div>
+
+          <div id="pixTabDados" class="hidden">
+            <div class="field-group">
+              <label>CPF / CNPJ</label>
+              <input type="text" placeholder="000.000.000-00" />
+            </div>
+            <div class="field-group">
+              <label>Banco</label>
+              <select>
+                <option>Selecione o banco</option>
+                <option>001 — Banco do Brasil</option>
+                <option>033 — Santander</option>
+                <option>104 — Caixa</option>
+                <option>237 — Bradesco</option>
+                <option>341 — Itaú</option>
+                <option>260 — Nubank</option>
+                <option>290 — Orange Bank</option>
+              </select>
+            </div>
+            <div class="field-group"><label>Agência</label><input type="text" placeholder="0000" /></div>
+            <div class="field-group"><label>Conta</label><input type="text" placeholder="00000-0" /></div>
+          </div>
+
+          <div id="pixTabQr" class="hidden">
+            <div class="qr-upload-area" onclick="document.getElementById('qrFile').click()">
+              <span>📷</span>
+              <p>Clique para fazer upload ou escanear QR Code</p>
+              <input type="file" id="qrFile" accept="image/*" hidden />
+            </div>
+          </div>
+
+          <div class="field-group mt8">
+            <label>Valor</label>
+            <input type="text" id="pixAmt" placeholder="R$ 0,00" oninput="maskMoney(this)" />
+          </div>
+          <div class="field-group">
+            <label>Descrição (opcional)</label>
+            <input type="text" placeholder="Ex: Churrasquinho sábado" />
+          </div>
+          <button class="btn btn-primary btn-full" onclick="sendPix()">Continuar →</button>
+        </div>
+
+        <!-- RECEBER PIX -->
+        <div class="pix-card">
+          <h2>⬇️ Receber Pix</h2>
+          <p class="muted">Compartilhe uma das suas chaves para receber:</p>
+          <div class="my-keys" id="myKeys"></div>
+          <button class="btn btn-outline btn-full" onclick="addKey()">+ Cadastrar nova chave</button>
+          <div class="divider"></div>
+          <h3>Gerar cobrança</h3>
+          <div class="field-group">
+            <label>Valor</label>
+            <input type="text" id="cobAmt" placeholder="R$ 0,00" oninput="maskMoney(this)" />
+          </div>
+          <div class="field-group">
+            <label>Descrição</label>
+            <input type="text" id="cobDesc" placeholder="Ex: Mensalidade academia" />
+          </div>
+          <button class="btn btn-primary btn-full" onclick="genCharge()">Gerar QR Code</button>
+          <div class="qr-result hidden" id="qrResult">
+            <div class="qr-box-big">QR Code gerado</div>
+            <p class="pix-copy-key" id="pixCopyStr">00020126360014br.gov.bcb.pix...</p>
+            <button class="btn btn-sm btn-outline" onclick="copyPixStr()">Copiar código</button>
+          </div>
+        </div>
+
+        <!-- HISTÓRICO PIX -->
+        <div class="pix-card full-width">
+          <h2>📋 Histórico Pix</h2>
+          <ul class="tx-list" id="pixHistList"></ul>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL CONFIRMAR PIX -->
+  <div class="modal-overlay hidden" id="pixModal">
+    <div class="modal">
+      <h3>Confirmar Pix</h3>
+      <div id="pixReviewContent"></div>
+      <div class="field-group">
+        <label>Senha de 4 dígitos</label>
+        <div class="pin-row">
+          <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+          <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+          <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+          <input type="password" maxlength="1" class="pin-digit" oninput="pinFocus(this)" />
+        </div>
+      </div>
+      <div class="tf-btn-row">
+        <button class="btn btn-outline" onclick="closePixModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmPix()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
