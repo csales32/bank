@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Orange Bank — Transferência</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="app-page">
   <aside class="sidebar" id="sidebar">
@@ -133,11 +134,15 @@
             <div class="success-icon">✅</div>
             <h2>Transferência realizada!</h2>
             <p id="successMsg"></p>
-            <div class="tf-btn-row">
+            <div class="receipt-actions">
+              <button class="btn btn-primary receipt-pdf-btn" onclick="downloadTransferPDF()">
+                📄 Baixar comprovante PDF
+              </button>
+            </div>
+            <div class="tf-btn-row" style="margin-top:12px">
               <button class="btn btn-outline" onclick="tfNew()">Nova transferência</button>
               <button class="btn btn-primary" onclick="window.location='extrato.html'">Ver extrato</button>
             </div>
-            <a href="#" class="link" onclick="printReceipt()">🖨 Imprimir comprovante</a>
           </div>
         </div>
 

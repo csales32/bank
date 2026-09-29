@@ -306,6 +306,9 @@ function tfBackToStep2() {
   document.getElementById('step2').classList.remove('hidden');
 }
 
+// Guarda dados da última transferência para o PDF
+let lastTransfer = {};
+
 function tfConfirm() {
   const pins = Array.from(document.querySelectorAll('#step3 .pin-digit')).map(i => i.value);
   if (pins.some(p => !p)) { toast('Digite a senha de 4 dígitos','error'); return; }
@@ -313,8 +316,20 @@ function tfConfirm() {
   setTimeout(() => {
     document.getElementById('step3').classList.add('hidden');
     document.getElementById('step4').classList.remove('hidden');
-    const val = document.getElementById('tfVal').value;
+    const val  = document.getElementById('tfVal').value;
     const name = document.getElementById('tfName').value;
+    // salva para o PDF
+    lastTransfer = {
+      nome:    name,
+      banco:   document.getElementById('tfBank').value,
+      agencia: document.getElementById('tfAg').value,
+      conta:   document.getElementById('tfConta').value,
+      tipo:    document.getElementById('tfTipo').value,
+      valor:   val,
+      data:    document.getElementById('tfDate').value,
+      desc:    document.getElementById('tfDesc').value,
+      autenticacao: gerarCodAutenticacao(),
+    };
     document.getElementById('successMsg').textContent = `${val} enviado para ${name} com sucesso!`;
     toast('Transferência realizada!','success');
   }, 1500);
@@ -326,7 +341,141 @@ function tfNew() {
   document.querySelectorAll('.transfer-step input').forEach(i => { if (!i.disabled) i.value=''; });
 }
 
-function printReceipt() { window.print(); }
+function gerarCodAutenticacao() {
+  return Math.random().toString(36).substring(2,12).toUpperCase() + Date.now().toString(36).toUpperCase();
+}
+
+function nowStr() {
+  const d = new Date();
+  return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR');
+}
+
+/* =============================================
+   PDF — utilitários de desenho
+   ============================================= */
+function getPDF() {
+  const { jsPDF } = window.jspdf;
+  return new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+}
+
+function drawPDFHeader(doc) {
+  // fundo laranja no topo
+  doc.setFillColor(232, 119, 34);
+  doc.rect(0, 0, 210, 38, 'F');
+
+  // nome do banco
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Orange Bank', 15, 18);
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text('CNPJ 00.000.000/0001-00  ·  Regulado pelo Banco Central do Brasil', 15, 26);
+  doc.text('Emitido em: ' + nowStr(), 15, 33);
+
+  // reset cor
+  doc.setTextColor(31, 35, 40);
+}
+
+function drawPDFFooter(doc) {
+  const pageH = doc.internal.pageSize.height;
+  doc.setDrawColor(229, 231, 235);
+  doc.line(15, pageH - 22, 195, pageH - 22);
+  doc.setFontSize(8);
+  doc.setTextColor(87, 96, 106);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Este comprovante é válido como prova de operação realizada pela Orange Bank.', 105, pageH - 16, { align: 'center' });
+  doc.text('Em caso de dúvidas, acesse orangebank.com.br ou ligue 0800 000 0000.', 105, pageH - 11, { align: 'center' });
+}
+
+function drawSection(doc, title, y) {
+  doc.setFillColor(247, 248, 250);
+  doc.roundedRect(15, y, 180, 8, 2, 2, 'F');
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(87, 96, 106);
+  doc.text(title.toUpperCase(), 19, y + 5.5);
+  doc.setTextColor(31, 35, 40);
+  return y + 12;
+}
+
+function drawRow(doc, label, value, y, highlight) {
+  if (highlight) {
+    doc.setFillColor(255, 243, 232);
+    doc.rect(15, y - 4, 180, 8, 'F');
+  }
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(87, 96, 106);
+  doc.text(label, 19, y);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(31, 35, 40);
+  doc.text(String(value), 195, y, { align: 'right' });
+  // linha divisória
+  doc.setDrawColor(229, 231, 235);
+  doc.line(15, y + 3, 195, y + 3);
+  return y + 10;
+}
+
+function drawAuthBox(doc, code, y) {
+  doc.setFillColor(220, 252, 231);
+  doc.roundedRect(15, y, 180, 18, 3, 3, 'F');
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(22, 163, 74);
+  doc.text('✔  Operação autenticada e processada com sucesso', 19, y + 6);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('Código de autenticação: ' + code, 19, y + 13);
+  doc.setTextColor(31, 35, 40);
+}
+
+/* =============================================
+   PDF — Transferência
+   ============================================= */
+function downloadTransferPDF() {
+  if (!window.jspdf) { toast('Aguarde o carregamento da biblioteca PDF…','info'); return; }
+  const t = lastTransfer;
+  const doc = getPDF();
+  drawPDFHeader(doc);
+
+  // título
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(31, 35, 40);
+  doc.text('Comprovante de Transferência', 105, 52, { align: 'center' });
+
+  let y = 64;
+
+  y = drawSection(doc, 'Dados do destinatário', y);
+  y = drawRow(doc, 'Nome', t.nome,    y);
+  y = drawRow(doc, 'Banco', t.banco,  y);
+  y = drawRow(doc, 'Agência', t.agencia || '—', y);
+  y = drawRow(doc, 'Conta', t.conta || '—', y);
+  y = drawRow(doc, 'Tipo de conta', t.tipo,  y);
+
+  y += 4;
+  y = drawSection(doc, 'Dados da operação', y);
+  y = drawRow(doc, 'Valor', t.valor, y, true);
+  y = drawRow(doc, 'Data', t.data ? t.data.split('-').reverse().join('/') : nowStr().split(' ')[0], y);
+  if (t.desc) y = drawRow(doc, 'Descrição', t.desc, y);
+  y = drawRow(doc, 'Tipo de operação', 'TED', y);
+
+  y += 4;
+  y = drawSection(doc, 'Conta de origem', y);
+  y = drawRow(doc, 'Titular', 'Carlos Rodrigues Silva', y);
+  y = drawRow(doc, 'CPF', '123.456.789-00', y);
+  y = drawRow(doc, 'Banco', '290 — Orange Bank', y);
+  y = drawRow(doc, 'Agência / Conta', '0001 / 12345-6', y);
+
+  y += 6;
+  drawAuthBox(doc, t.autenticacao || gerarCodAutenticacao(), y);
+
+  drawPDFFooter(doc);
+  doc.save('comprovante-transferencia-orangebank.pdf');
+  toast('PDF gerado com sucesso!', 'success');
+}
 
 function renderFavoritos() {
   const el = document.getElementById('favList');
@@ -528,9 +677,62 @@ function readBoleto() {
 
 function readBarcode() { toast('Leitura via câmera em breve','info'); }
 
+// Guarda dados do último boleto para o PDF
+let lastBoleto = {};
+
 function payBoleto() {
   toast('Processando pagamento…','info');
-  setTimeout(() => { toast('Boleto pago com sucesso!','success'); document.getElementById('boletoResult').classList.add('hidden'); document.getElementById('barcodeInput').value=''; }, 1500);
+  lastBoleto = {
+    beneficiario: document.getElementById('bBenef')?.textContent || 'Beneficiário',
+    valor:        document.getElementById('bVal')?.textContent  || '—',
+    vencimento:   document.getElementById('bVenc')?.textContent || '—',
+    pagamento:    document.getElementById('bDate')?.value?.split('-').reverse().join('/') || nowStr().split(' ')[0],
+    codigo:       document.getElementById('barcodeInput')?.value?.slice(0,30) + '…' || '—',
+    autenticacao: gerarCodAutenticacao(),
+  };
+  setTimeout(() => {
+    toast('Boleto pago com sucesso!','success');
+    // mostra área do comprovante
+    document.getElementById('boletoSuccessMsg').textContent =
+      `Pagamento de ${lastBoleto.valor} para ${lastBoleto.beneficiario} realizado com sucesso!`;
+    document.getElementById('boletoReceiptActions').classList.remove('hidden');
+    document.getElementById('barcodeInput').value = '';
+  }, 1500);
+}
+
+function downloadBoletoPDF() {
+  if (!window.jspdf) { toast('Aguarde o carregamento da biblioteca PDF…','info'); return; }
+  const b = lastBoleto;
+  const doc = getPDF();
+  drawPDFHeader(doc);
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(31, 35, 40);
+  doc.text('Comprovante de Pagamento de Boleto', 105, 52, { align: 'center' });
+
+  let y = 64;
+
+  y = drawSection(doc, 'Dados do boleto', y);
+  y = drawRow(doc, 'Beneficiário', b.beneficiario, y);
+  y = drawRow(doc, 'Valor pago', b.valor, y, true);
+  y = drawRow(doc, 'Vencimento', b.vencimento, y);
+  y = drawRow(doc, 'Data de pagamento', b.pagamento, y);
+  y = drawRow(doc, 'Código (trecho)', b.codigo, y);
+
+  y += 4;
+  y = drawSection(doc, 'Conta debitada', y);
+  y = drawRow(doc, 'Titular', 'Carlos Rodrigues Silva', y);
+  y = drawRow(doc, 'CPF', '123.456.789-00', y);
+  y = drawRow(doc, 'Banco', '290 — Orange Bank', y);
+  y = drawRow(doc, 'Agência / Conta', '0001 / 12345-6', y);
+
+  y += 6;
+  drawAuthBox(doc, b.autenticacao, y);
+
+  drawPDFFooter(doc);
+  doc.save('comprovante-boleto-orangebank.pdf');
+  toast('PDF gerado com sucesso!', 'success');
 }
 
 function selectConta(name) {
@@ -552,11 +754,58 @@ function setRecarga(btn, val) {
   selectedRecarga = val;
 }
 
+// Guarda dados da última recarga para o PDF
+let lastRecargaData = {};
+
 function doRecarga() {
   const num = document.getElementById('recargaNum')?.value;
   if (!num) { toast('Digite o número','error'); return; }
   if (!selectedRecarga) { toast('Selecione um valor','error'); return; }
+  lastRecargaData = {
+    numero: num,
+    operadora: selectedOp,
+    valor: selectedRecarga,
+    data: nowStr(),
+    autenticacao: gerarCodAutenticacao(),
+  };
   toast(`Recarga de ${selectedRecarga} realizada para ${num} (${selectedOp})!`,'success');
+  document.getElementById('recargaSuccessMsg').textContent =
+    `Recarga de ${selectedRecarga} para ${num} (${selectedOp}) realizada!`;
+  document.getElementById('recargaReceiptActions').classList.remove('hidden');
+}
+
+function downloadRecargaPDF() {
+  if (!window.jspdf) { toast('Aguarde o carregamento da biblioteca PDF…','info'); return; }
+  const r = lastRecargaData;
+  const doc = getPDF();
+  drawPDFHeader(doc);
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(31, 35, 40);
+  doc.text('Comprovante de Recarga', 105, 52, { align: 'center' });
+
+  let y = 64;
+
+  y = drawSection(doc, 'Dados da recarga', y);
+  y = drawRow(doc, 'Número recarregado', r.numero, y);
+  y = drawRow(doc, 'Operadora', r.operadora, y);
+  y = drawRow(doc, 'Valor', r.valor, y, true);
+  y = drawRow(doc, 'Data e hora', r.data, y);
+
+  y += 4;
+  y = drawSection(doc, 'Conta debitada', y);
+  y = drawRow(doc, 'Titular', 'Carlos Rodrigues Silva', y);
+  y = drawRow(doc, 'CPF', '123.456.789-00', y);
+  y = drawRow(doc, 'Banco', '290 — Orange Bank', y);
+  y = drawRow(doc, 'Agência / Conta', '0001 / 12345-6', y);
+
+  y += 6;
+  drawAuthBox(doc, r.autenticacao, y);
+
+  drawPDFFooter(doc);
+  doc.save('comprovante-recarga-orangebank.pdf');
+  toast('PDF gerado com sucesso!', 'success');
 }
 
 function renderPagHist() {

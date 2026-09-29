@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Orange Bank — Pagamentos</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="app-page">
   <aside class="sidebar" id="sidebar">
@@ -71,6 +72,16 @@
             <input type="date" id="bDate" />
           </div>
           <button class="btn btn-primary btn-full" onclick="payBoleto()">Pagar agora</button>
+          <!-- comprovante aparece após pagamento -->
+          <div class="receipt-actions hidden" id="boletoReceiptActions">
+            <div class="success-box" style="padding:16px 0 0">
+              <div class="success-icon" style="font-size:2rem">✅</div>
+              <p style="margin-bottom:12px" id="boletoSuccessMsg"></p>
+              <button class="btn btn-primary receipt-pdf-btn" onclick="downloadBoletoPDF()">
+                📄 Baixar comprovante PDF
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -121,6 +132,15 @@
           <button class="val-btn" onclick="setRecarga(this,'R$ 100,00')">R$ 100</button>
         </div>
         <button class="btn btn-primary btn-full" onclick="doRecarga()">Confirmar recarga</button>
+        <div class="receipt-actions hidden" id="recargaReceiptActions">
+          <div class="success-box" style="padding:16px 0 0">
+            <div class="success-icon" style="font-size:2rem">✅</div>
+            <p style="margin-bottom:12px" id="recargaSuccessMsg"></p>
+            <button class="btn btn-primary receipt-pdf-btn" onclick="downloadRecargaPDF()">
+              📄 Baixar comprovante PDF
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- HISTÓRICO DE PAGAMENTOS -->

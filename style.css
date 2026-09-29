@@ -584,3 +584,19 @@ input:checked + .slider::before { transform: translateX(20px); }
   .contas-grid { grid-template-columns: repeat(2,1fr); }
   .alloc-item span { width: 120px; }
 }
+
+/* =============================================
+   COMPROVANTE PDF
+   ============================================= */
+.receipt-actions { margin-top: 16px; text-align: center; }
+.receipt-pdf-btn {
+  font-size: 1rem;
+  padding: 12px 28px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(232,119,34,.35);
+  animation: pulse-orange .3s ease;
+}
+@keyframes pulse-orange {
+  0%   { transform: scale(.95); opacity: .7; }
+  100% { transform: scale(1);   opacity: 1;  }
+}
